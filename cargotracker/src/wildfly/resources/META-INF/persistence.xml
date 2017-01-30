@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<persistence version="2.1" xmlns="http://xmlns.jcp.org/xml/ns/persistence" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/persistence http://xmlns.jcp.org/xml/ns/persistence/persistence_2_1.xsd">
+	<!-- wildfly persistence.xml -->
+	<persistence-unit name="CargoTrackerUnit" transaction-type="JTA">
+		<provider>org.eclipse.persistence.jpa.PersistenceProvider</provider>
+		<jta-data-source>java:/datasources/CargoTrackerDatabase</jta-data-source>
+		<class>net.java.cargotracker.domain.model.cargo.Cargo</class>
+        <class>net.java.cargotracker.domain.model.cargo.Leg</class>
+        <class>net.java.cargotracker.domain.model.handling.HandlingEvent</class>
+        <class>net.java.cargotracker.domain.model.location.Location</class>
+        <class>net.java.cargotracker.domain.model.voyage.CarrierMovement</class>
+        <class>net.java.cargotracker.domain.model.voyage.Voyage</class>
+		
+		<exclude-unlisted-classes>false</exclude-unlisted-classes>
+		<properties>
+			<property name="javax.persistence.schema-generation.database.action" value="drop-and-create" />
+			<property name="eclipselink.logging.level" value="WARNING" />
+			<property name="eclipselink.deploy-on-startup" value="true" />
+			<property name="eclipselink.session.customizer" value="net.java.cargotracker.domain.model.voyage.UUIDSequence"/>
+		</properties>
+	</persistence-unit>
+</persistence>

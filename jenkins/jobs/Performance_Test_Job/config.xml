@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<flow-definition plugin="workflow-job@2.9">
+	<actions/>
+	<description></description>
+	<keepDependencies>false</keepDependencies>
+	<properties>
+		<hudson.model.ParametersDefinitionProperty>
+			<parameterDefinitions>
+				<hudson.model.StringParameterDefinition>
+					<name>THREAD_COUNT</name>
+					<description>Number of threads during load test</description>
+					<defaultValue>50</defaultValue>
+				</hudson.model.StringParameterDefinition>
+				<hudson.model.StringParameterDefinition>
+					<name>DURATION</name>
+					<description>Duration of the load test in seconds</description>
+					<defaultValue>300</defaultValue>
+				</hudson.model.StringParameterDefinition>
+			</parameterDefinitions>
+		</hudson.model.ParametersDefinitionProperty>
+		<org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+			<triggers/>
+		</org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
+	</properties>
+	<definition class="org.jenkinsci.plugins.workflow.cps.CpsFlowDefinition" plugin="workflow-cps@2.23">
+		<script>node {
+			load &apos;/data/cargotracker/Jenkinsfile&apos;
+			}</script>
+		<sandbox>true</sandbox>
+	</definition>
+	<triggers/>
+</flow-definition>

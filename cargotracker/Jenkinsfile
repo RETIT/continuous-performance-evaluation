@@ -1,0 +1,76 @@
+def workspace = pwd()
+
+try {
+	stage("Checkout") {
+
+		// Normally, we would checkout some files from Git or SVN here.
+		// For this demo, we got everything via a Docker volume, so we just copy that.
+		sh "rm -rf $workspace/*"
+		sh "cp -R /data/cargotracker /data/wildfly /data/postgresql $workspace/"
+
+	}
+
+	stage("Build") {
+
+		// Build cargotracker application
+		sh "mvn -f $workspace/cargotracker/pom.xml clean -Pwildfly package"	
+	}
+
+	stage("Deploy") {
+	
+		// Deploy PostgreSQL
+		dir("$workspace/postgresql") {
+			sh "sudo docker build -t demo_postgres ."
+			sh "sudo docker create --name demo_postgres --hostname=demo_postgres --network=demo_network -p 5432:5432 demo_postgres"
+			sh "sudo docker start demo_postgres"
+		}
+		
+		// Copy application to WildFly
+		sh "cp $workspace/cargotracker/target/cargo-tracker.war $workspace/wildfly/"
+		
+		// Deploy WildFly
+		dir("$workspace/wildfly") {
+			sh "sudo docker build -t demo_wildfly ."
+			sh "sudo docker create --name demo_wildfly --hostname=demo_wildfly --network=demo_network -p 8081:8080 demo_wildfly"
+			sh "sudo docker start demo_wildfly"
+			// Wait for WildFly to start
+			sleep time: 90, unit: 'SECONDS'
+		}
+	}
+
+	node('docker-jenkins-slave') {
+	
+		stage("Load test") {
+			def slave_workspace = pwd()
+			
+			sh "rm -rf $slave_workspace/*"
+			sh "cp -R /data/cargotracker /data/wildfly /data/postgresql $slave_workspace/"
+			
+			sh "mvn -f $slave_workspace/cargotracker/pom.xml jmeter:jmeter -Dperformancetest.threadCount=$THREAD_COUNT -Dperformancetest.duration=$DURATION"
+
+			performanceReport compareBuildPrevious: true, configType: 'MRT', errorFailedThreshold: 0, errorUnstableResponseTimeThreshold: '',
+				errorUnstableThreshold: 0, failBuildIfNoResultFile: false, modeOfThreshold: true, modePerformancePerTestCase: true,
+				modeThroughput: false, nthBuildNumber: 0, parsers: [[$class: 'JMeterCsvParser', delimiter: ',',
+				glob: './cargotracker/target/jmeter/results/cargotracker-jmeter.csv',
+				pattern: 'timeStamp,elapsed,URL,responseCode,responseMessage,threadName,dataType,success,bytes,grpThreads,allThreads,Latency',
+				skipFirstLine: true]],
+				relativeFailedThresholdNegative: -1, relativeFailedThresholdPositive: 100,
+				relativeUnstableThresholdNegative: -1, relativeUnstableThresholdPositive: 50
+		}
+	}
+	
+} catch(err) {
+	echo "Failed: ${err}"
+	currentBuild.result = 'FAILURE'
+	throw err
+} finally {
+	// See https://issues.jenkins-ci.org/browse/JENKINS-37171
+	if(currentBuild.result == null) {
+    	currentBuild.result = 'SUCCESS'
+    }
+	
+	stage("Undeploy") {
+		sh "sudo docker stop demo_wildfly && sudo docker rm demo_wildfly"
+		sh "sudo docker stop demo_postgres && sudo docker rm demo_postgres"
+	}
+}
