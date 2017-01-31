@@ -69,8 +69,10 @@ try {
     	currentBuild.result = 'SUCCESS'
     }
 	
-	stage("Undeploy") {
-		sh "sudo docker stop demo_wildfly && sudo docker rm demo_wildfly"
-		sh "sudo docker stop demo_postgres && sudo docker rm demo_postgres"
+	if("$UNDEPLOY" == "true") {
+		stage("Undeploy") {
+			sh "sudo docker stop demo_wildfly && sudo docker rm demo_wildfly"
+			sh "sudo docker stop demo_postgres && sudo docker rm demo_postgres"
+		}
 	}
 }

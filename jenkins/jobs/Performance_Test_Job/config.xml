@@ -16,6 +16,11 @@
 					<description>Duration of the load test in seconds</description>
 					<defaultValue>300</defaultValue>
 				</hudson.model.StringParameterDefinition>
+				<hudson.model.BooleanParameterDefinition>
+					<name>UNDEPLOY</name>
+					<description>Whether the application should be undeployed after the test</description>
+					<defaultValue>true</defaultValue>
+				</hudson.model.BooleanParameterDefinition>
 			</parameterDefinitions>
 		</hudson.model.ParametersDefinitionProperty>
 		<org.jenkinsci.plugins.workflow.job.properties.PipelineTriggersJobProperty>
