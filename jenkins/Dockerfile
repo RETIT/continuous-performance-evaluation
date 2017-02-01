@@ -23,6 +23,9 @@ RUN /usr/local/bin/install-plugins.sh docker-plugin docker-commons docker-workfl
 	pipeline-model-api pipeline-model-declarative-agent pipeline-model-definition pipeline-rest-api \
 	pipeline-stage-step pipeline-stage-tags-metadata pipeline-stage-view pipeline-utility-steps
 
+# Add script approval
+ADD scriptApproval.xml /var/jenkins_home/
+
 # Add config for docker-slave
 ADD nodes/ /var/jenkins_home/nodes/
 	
