@@ -36,7 +36,7 @@ try {
 			
 			// Wait for WildFly to start
 			def start = System.currentTimeMillis()
-			for(int i = 0; i <= 12; i++) {
+			for(int i = 0; i <= 18; i++) {
 				def html = null
 				try {
 					html = "http://demo_wildfly:8080/cargo-tracker".toURL().text
@@ -45,8 +45,8 @@ try {
 					// Silent catch
 				}
 				if(html == null || html.length() <= 0) {
-					if(i == 12) {
-						error "WildFly didn't start in 2 minutes, please check the logs using 'docker logs demo_wildfly'"
+					if(i == 18) {
+						error "WildFly didn't start in 3 minutes, please check the logs using 'docker logs demo_wildfly'"
 					}
 					echo "WildFly not yet started, waiting..."
 					sleep 10
