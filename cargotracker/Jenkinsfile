@@ -33,8 +33,31 @@ try {
 			sh "sudo docker build -t demo_wildfly ."
 			sh "sudo docker create --name demo_wildfly --hostname=demo_wildfly --network=demo_network -p 8081:8080 demo_wildfly"
 			sh "sudo docker start demo_wildfly"
+			
 			// Wait for WildFly to start
-			sleep time: 90, unit: 'SECONDS'
+			def start = System.currentTimeMillis()
+			for(int i = 0; i <= 12; i++) {
+				def html = null
+				try {
+					html = "http://demo_wildfly:8080/cargo-tracker".toURL().text
+				}
+				catch(err) {
+					// Silent catch
+				}
+				if(html == null || html.length() <= 0) {
+					if(i == 12) {
+						error "WildFly didn't start in 2 minutes, please check the logs using 'docker logs demo_wildfly'"
+					}
+					echo "WildFly not yet started, waiting..."
+					sleep 10
+				}
+				else {
+					def end = System.currentTimeMillis()
+					def seconds = (end - start) / 1000
+					echo "WildFly started in $seconds seconds"
+					break
+				}
+			}
 		}
 	}
 
@@ -71,8 +94,8 @@ try {
 	
 	if("$UNDEPLOY" == "true") {
 		stage("Undeploy") {
-			sh "sudo docker stop demo_wildfly && sudo docker rm demo_wildfly"
 			sh "sudo docker stop demo_postgres && sudo docker rm demo_postgres"
+			sh "sudo docker stop demo_wildfly && sudo docker rm demo_wildfly"
 		}
 	}
 }

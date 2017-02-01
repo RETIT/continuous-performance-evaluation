@@ -10,6 +10,8 @@ ADD modules/ /opt/jboss/wildfly/modules/system/layers/base/
 ADD cargo-tracker.war /opt/jboss/wildfly/standalone/deployments/
 
 # InspectIT configuration
-ENV INSPECTIT_VERSION \"1.7.6.89\"
-ENV INSPECTIT_CMR_ADDR 172.18.0.3
+ENV INSPECTIT_CMR_ADDR inspectIT-CMR
 ENV INSPECTIT_CMR_PORT 9070
+
+# Workaround to a bug in inspectIT's agent script
+ENV INSPECTIT_VERSION \"${INSPECTIT_VERSION}\"
