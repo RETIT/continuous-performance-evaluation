@@ -5,7 +5,7 @@ This project contains an example Jenkins pipeline for continuous performance eva
 the demo. It comes with the following components:
 
 * Pre-configured Jenkins
-* A Jenkins slave running in separate Docker container (unless you use the branch 'slaveless')
+* A Jenkins slave running in separate Docker container
 * InspectIT Central Measurement Repository (CMR)
 * A sample application (Cargo Tracker), running on WildFly 10 with PostgreSQL in the background
 
