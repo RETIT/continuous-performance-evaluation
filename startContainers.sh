@@ -17,7 +17,7 @@ docker build -t demo_slave .
 docker create --name demo_slave --network demo_network -v $directory:/data demo_slave
 
 # Create InspectIT CMR
-docker create --name inspectIT-CMR --network demo_network -p 8182:8182 -p 9070:9070 inspectit/cmr
+docker create --name inspectIT-CMR --network demo_network -p 8182:8182 -p 9070:9070 -e BUFFER_SIZE=512 inspectit/cmr
 
 # Run Containers
 docker start demo_jenkins

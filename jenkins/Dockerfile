@@ -38,5 +38,7 @@ ADD plugins/ /usr/share/jenkins/ref/plugins/
 USER root
 RUN chown -R jenkins /var/jenkins_home/jobs/* \
 	&& chgrp -R jenkins /var/jenkins_home/jobs/*
+
+ENV JAVA_OPTS -Xmx512m
 	
 EXPOSE 8787
