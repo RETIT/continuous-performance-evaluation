@@ -10,5 +10,6 @@ RUN tar xzf /tmp/apache-maven-3.3.9-bin.tar.gz -C /opt/ \
 ENV MAVEN_HOME /opt/maven
 
 COPY jenkins-slave /usr/local/bin/jenkins-slave
+RUN chmod +x /usr/local/bin/jenkins-slave
 
 ENTRYPOINT ["jenkins-slave"]
