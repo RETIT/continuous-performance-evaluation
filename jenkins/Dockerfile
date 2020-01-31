@@ -1,4 +1,4 @@
-FROM jenkins:2.32.2
+FROM jenkins/jenkins:2.219
 
 # Install sudo so we can access docker on host
 USER root

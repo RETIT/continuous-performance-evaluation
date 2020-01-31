@@ -6,7 +6,7 @@ docker network create --driver bridge demo_network
 REM Create Jenkins container
 cd jenkins
 docker build -t demo_jenkins .
-docker create -p 8080:8080 -p 50000:50000 -p 8787:8787 --name demo_jenkins --hostname demo_jenkins --network demo_network -v /var/run/docker.sock:/var/run/docker.sock -v /usr/bin/docker:/usr/bin/docker -v %~dp0:/data demo_jenkins
+docker create -p 8080:8080 -p 50000:50000 -p 8787:8787 --name demo_jenkins --hostname demo_jenkins --network demo_network -v /var/run/docker.sock:/var/run/docker.sock -v /usr/local/bin/docker:/usr/bin/docker -v %~dp0:/data demo_jenkins
 
 REM Create Slave container
 cd ../docker-jenkins-slave

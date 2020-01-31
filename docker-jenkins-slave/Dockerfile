@@ -1,4 +1,4 @@
-FROM jenkinsci/slave:latest
+FROM jenkins/slave:latest
 
 # Download and install maven
 USER root
